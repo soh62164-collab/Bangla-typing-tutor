@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>বাংলা টাইপিং শিখি</title>
+<meta name="description" content="জাতীয় কিবোর্ড লেআউটে বাংলা টাইপিং শেখার অ্যাপ: আঙুলের অবস্থান থেকে পরীক্ষার গতি পর্যন্ত।">
+<meta name="theme-color" content="#2a3f9d">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main id="app"><noscript>এই অ্যাপ চালাতে জাভাস্ক্রিপ্ট চালু থাকতে হবে।</noscript></main>
+<script src="layout.js"></script>
+<script src="texts.js"></script>
+<script src="core.js"></script>
+<script src="app.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+}
+</script>
+</body>
+</html>
