@@ -1,4 +1,4 @@
-/* সার্ভিস ওয়ার্কার: অফলাইনে চালানোর জন্য। ফাইল বদলালে CACHE-এর সংখ্যা বাড়িয়ে দিন। */
+/* সার্ভিস ওয়ার্কার: অফলাইনে চালানোর জন্য */
 const CACHE = 'bangla-typing-v1';
 const ASSETS = [
   './', 'index.html', 'style.css', 'layout.js', 'texts.js', 'core.js', 'app.js',
@@ -17,7 +17,6 @@ self.addEventListener('activate', e => {
   );
 });
 
-// আগে ক্যাশ থেকে দেখায়, পাশাপাশি নতুন সংস্করণ এনে ক্যাশ হালনাগাদ করে
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   e.respondWith(
