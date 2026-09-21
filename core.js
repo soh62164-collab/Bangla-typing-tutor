@@ -4,23 +4,20 @@
   var L = g.LAYOUT;
   var TEXTS = g.TEXTS;
 
-  // ---------- অক্ষরের ধরন ----------
-  var RE_CONS = /[\u0995-\u09B9\u09DC-\u09DF]/;                      // ব্যঞ্জন
-  var RE_LETTER = /[\u0985-\u0994\u0995-\u09B9\u09DC-\u09DF\u09CE\u09E0]/; // ব্যঞ্জন + স্বর + ৎ
-  var RE_SIGN = /[\u09BE-\u09CC\u0981-\u0983]/;                      // কার-চিহ্ন, ঁ ং ঃ
+  var RE_CONS = /[\u0995-\u09B9\u09DC-\u09DF]/;
+  var RE_LETTER = /[\u0985-\u0994\u0995-\u09B9\u09DC-\u09DF\u09CE\u09E0]/;
+  var RE_SIGN = /[\u09BE-\u09CC\u0981-\u0983]/;
   var VIRAMA = '\u09CD';
   function isCons(c) { return RE_CONS.test(c); }
   function isLetter(c) { return RE_LETTER.test(c); }
   function isSign(c) { return RE_SIGN.test(c); }
 
-  // য়, ড়, ঢ় কে একক অক্ষর (precomposed) করে নেয়
   function fixNukta(s) {
     return s.replace(/\u09AF\u09BC/g, '\u09DF').replace(/\u09A1\u09BC/g, '\u09DC').replace(/\u09A2\u09BC/g, '\u09DD');
   }
 
   function cps(s) { return Array.from(s); }
 
-  // ---------- উল্টো ম্যাপ: অক্ষর -> কোন কী + কোন স্তর ----------
   var REV = {};
   ['n', 's', 'a', 'as'].forEach(function (layer) {
     Object.keys(L).forEach(function (code) {
@@ -40,7 +37,6 @@
     return cps(text).every(function (c) { return c in REV; });
   }
 
-  // ---------- আঙুল ----------
   var FINGER_OF = {};
   function setF(f, codes) { codes.forEach(function (c) { FINGER_OF[c] = f; }); }
   setF('lp', ['Backquote', 'Digit1', 'KeyQ', 'KeyA', 'KeyZ', 'Tab', 'CapsLock', 'ShiftLeft', 'ControlLeft']);
@@ -69,13 +65,11 @@
     return SPECIAL[code] || code;
   }
 
-  // কার-চিহ্ন একা দেখাতে ◌ যোগ করে
   function disp(c) {
     if (c === ' ') return '␣';
     return (isSign(c) || c === VIRAMA) ? '\u25CC' + c : c;
   }
 
-  // ---------- অক্ষর-গুচ্ছ (এক গুচ্ছ = ব্যঞ্জন + যুক্ত ব্যঞ্জন + কার) ----------
   function clusters(arr) {
     var out = [], i = 0;
     while (i < arr.length) {
@@ -90,17 +84,17 @@
     return out;
   }
 
-  // ---------- লেখা (ফিল্টার করা) ----------
   var TX = {}, DROPPED = [];
-  Object.keys(TEXTS).forEach(function (k) {
-    TX[k] = TEXTS[k].map(fixNukta).filter(function (t) {
-      var ok = typable(t);
-      if (!ok) DROPPED.push(t);
-      return ok;
+  if (TEXTS) {
+    Object.keys(TEXTS).forEach(function (k) {
+      TX[k] = TEXTS[k].map(fixNukta).filter(function (t) {
+        var ok = typable(t);
+        if (!ok) DROPPED.push(t);
+        return ok;
+      });
     });
-  });
+  }
 
-  // ---------- পাঠ ----------
   var LESSONS = [
     { id: 'intro', g: 'শুরুর কথা', t: 'আঙুলের অবস্থান ও বসার নিয়ম', type: 'intro' },
 
@@ -159,7 +153,6 @@
     return set;
   }
 
-  // ---------- অনুশীলন-জেনারেটর ----------
   function rnd(n) { return Math.floor(Math.random() * n); }
   function pick(a) { return a[rnd(a.length)]; }
   function uniq(a) { return a.filter(function (x, i) { return a.indexOf(x) === i; }); }
