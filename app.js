@@ -5,6 +5,7 @@
   const L = window.LAYOUT;
   const app = document.getElementById('app');
 
+  // ---------- ছোট সহায়ক ----------
   const BN = '০১২৩৪৫৬৭৮৯';
   const bn = n => String(n).replace(/\d/g, d => BN[+d]);
   const esc = s => String(s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
@@ -22,6 +23,7 @@
   let lastLessonId = null;
   let agDown = false;
 
+  // ---------- কিবোর্ডের গঠন ----------
   const ROWS = [
     [['Backquote', 1], ['Digit1', 1], ['Digit2', 1], ['Digit3', 1], ['Digit4', 1], ['Digit5', 1], ['Digit6', 1],
       ['Digit7', 1], ['Digit8', 1], ['Digit9', 1], ['Digit0', 1], ['Minus', 1], ['Equal', 1], ['Backspace', 2, '⌫']],
@@ -76,6 +78,7 @@
     return `<span class="chip"><b>${esc(C.keyLabel(code))}</b>${ch ? esc(C.disp(ch)) : ''}</span>`;
   }
 
+  // ---------- হোম ----------
   function renderHome() {
     stopSession();
     document.title = 'বাংলা টাইপিং শিখি';
@@ -121,6 +124,7 @@
     window.scrollTo(0, 0);
   }
 
+  // ---------- আঙুলের অবস্থান ----------
   function renderIntro() {
     stopSession();
     const legend = [
@@ -142,12 +146,15 @@
         <p>বাম হাতের কী-তে Shift লাগলে ডান Shift, ডান হাতের কী-তে লাগলে বাম Shift চাপুন। <b>AltGr</b> মানে স্পেসবারের ডান পাশের Alt কী। এটা ডান বুড়ো আঙুলে চাপুন। ফোনের OTG কিবোর্ডেও একই।</p>
         <h3>বসা ও অভ্যাস</h3>
         <p>পিঠ সোজা, কনুই প্রায় ৯০ ডিগ্রিতে, কবজি হালকা ভাসানো। কিবোর্ডের দিকে তাকাবেন না, ভুল হলেও নয়। শুরুতে গতির চেয়ে নির্ভুলতা বেশি জরুরি। নির্ভুলতা ৯৫%-এর উপরে এলে গতি বাড়ান।</p>
+        <h3>আপনার কিবোর্ডের ছাপা লেখা</h3>
+        <p>অনেক কিবোর্ডে বিজয় লেআউটের বাংলা অক্ষর ছাপা থাকে, যা জাতীয় লেআউটের সাথে কয়েকটি কী-তে মেলে না (যেমন F ও H)। জাতীয় শিখতে হলে ছাপা লেখা উপেক্ষা করে এই অ্যাপের কিবোর্ডের ছবি দেখুন।</p>
       </div>
       <button class="cta" data-go="lesson:h1">প্রথম পাঠ শুরু করুন</button>`;
     HOME_KEYS.forEach(c => { const k = $(`.key[data-code="${c}"]`); if (k) k.classList.add('home'); });
     window.scrollTo(0, 0);
   }
 
+  // ---------- লেআউট চার্ট ----------
   const LAYER_NAMES = { n: 'সাধারণ', s: 'Shift', a: 'AltGr', as: 'AltGr + Shift' };
   function renderChart(layer) {
     stopSession();
@@ -155,10 +162,11 @@
       <div class="bar"><button class="back" data-go="home" aria-label="হোমে ফিরুন">←</button><h2>জাতীয় কিবোর্ড লেআউট চার্ট</h2></div>
       <div class="tabs">${Object.keys(LAYER_NAMES).map(k => `<button class="${k === layer ? 'on' : ''}" data-go="layer:${k}">${LAYER_NAMES[k]}</button>`).join('')}</div>
       ${kbHTML(layer)}
-      <p class="note">এই চার্ট উইকিমিডিয়া কমন্সের "KB-Bengali-Jatiyo.svg" (বিসিসি-প্রকাশিত সফটওয়্যারের সংজ্ঞা অনুযায়ী) থেকে নেওয়া। পরীক্ষার আগে অফিসিয়াল বিসিসি চার্টের সাথে মিলিয়ে নিন।</p>`;
+      <p class="note">এই চার্ট উইকিমিডিয়া কমন্সের "KB-Bengali-Jatiyo.svg" (বিসিসি-প্রকাশিত সফটওয়্যারের সংজ্ঞা অনুযায়ী) থেকে নেওয়া। পরীক্ষার আগে অফিসিয়াল বিসিসি চার্টের সাথে মিলিয়ে নিন। কোনো কী ভুল মনে হলে layout.js ফাইলে ঠিক করলেই পুরো অ্যাপে ঠিক হয়ে যাবে।</p>`;
     window.scrollTo(0, 0);
   }
 
+  // ---------- পাঠ ----------
   function startLesson(id) {
     const idx = C.lessonIndex(id);
     if (idx < 0) return renderHome();
@@ -211,6 +219,7 @@
     session = null;
   }
 
+  // ---------- হিসাব ----------
   function matches(s) {
     let m = 0;
     for (let i = 0; i < s.typed.length; i++) if (s.typed[i] === s.target[i]) m++;
@@ -228,6 +237,7 @@
   }
   const fmtTime = secs => { const m = Math.floor(secs / 60), r = Math.floor(secs % 60); return bn(m) + ':' + bn(String(r).padStart(2, '0')); };
 
+  // ---------- স্ক্রিন আপডেট ----------
   function updateText() {
     const s = session, box = $('#tbox');
     if (!s || !box) return;
@@ -285,6 +295,7 @@
     [info.code].concat(modKeys).forEach(c => { const k = $(`.key[data-code="${c}"]`); if (k) k.classList.add('target'); });
   }
 
+  // ---------- কী ইভেন্ট ----------
   const MODS = ['ShiftLeft', 'ShiftRight', 'ControlLeft', 'ControlRight', 'AltLeft', 'AltRight', 'MetaLeft', 'MetaRight', 'CapsLock', 'ContextMenu'];
 
   function onKey(e) {
@@ -391,6 +402,7 @@
     window.scrollTo(0, 0);
   }
 
+  // ---------- ক্লিক ----------
   app.addEventListener('click', e => {
     const b = e.target.closest ? e.target.closest('[data-go]') : null;
     if (!b) return;
